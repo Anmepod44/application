@@ -16,8 +16,8 @@ services:
   nginx:
     image: nginx:latest
     container_name: nginx
-    volumes:
-      - ./nginx:/etc/nginx/conf.d:ro
+    # volumes:
+    #   - ./nginx:/etc/nginx/conf.d:ro
     ports:
       - "80:80"
     depends_on:
