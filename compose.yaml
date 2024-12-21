@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flask_app
+    volumes:
+      - ./application:/application
+    ports:
+      - "8080:8080" # Internal Flask server port
+    networks:
+      - net
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx:/etc/nginx/conf.d:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    networks:
+      - net
+
+networks:
+  net:
+    driver: bridge
