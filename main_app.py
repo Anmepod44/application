@@ -1,13 +1,16 @@
 from flask import Flask,request, jsonify
 import os
+from flask import render_template
 
 app = Flask(__name__)
 
 # Root route
 @app.route('/')
 def home():
-    return "Welcome to the Advanced Automated Dashboard!"
-
+    return "Welcome to the Automated Dashboard!"
+@app.route('/dashboard')
+def index():
+    return render_template('index.html')
 # List all modules
 @app.route('/modules', methods=['GET'])
 def list_modules():
