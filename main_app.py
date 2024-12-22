@@ -1,42 +1,44 @@
-from flask import Flask
+from flask import Flask,request, jsonify
 import os
 
 app = Flask(__name__)
-MODULE_DIR = "/application/modules"
 
-def load_modules():
-    modules = []
-    for item in os.listdir(MODULE_DIR):
-        mod_path = os.path.join(MODULE_DIR, item)
-        if os.path.isdir(mod_path) and os.path.exists(os.path.join(mod_path, 'module.py')):
-            module_name = item
-            try:
-                module = __import__(f"modules.{module_name}.module", fromlist=['init_app'])
-                if hasattr(module, 'init_app'):
-                    module.init_app(app)
-                    modules.append(module_name)
-            except Exception as e:
-                with open("/application/module_errors.log", "a") as log:
-                    log.write(f"Failed to load module {module_name}: {e}\n")
-    return modules
-
-@app.route("/reload_modules")
-def reload_modules():
-    loaded = load_modules()
-    return f"Modules reloaded: {loaded}"
-
-
+# Root route
 @app.route('/')
 def home():
-    return "Welcome to the Automated Dashboard!"
+    return "Welcome to the Advanced Automated Dashboard!"
 
-@app.route('/modules')
-def modules():
-    modules_path = os.path.join(os.getcwd(), 'dashboard', 'modules')
-    installed_modules = os.listdir(modules_path)
-    return f"Installed Modules: {', '.join(installed_modules)}"
+# List all modules
+@app.route('/modules', methods=['GET'])
+def list_modules():
+    modules_path = os.path.join(os.getcwd(), 'modules')
+    installed_modules = os.listdir(modules_path) if os.path.exists(modules_path) else []
+    return jsonify({"installed_modules": installed_modules})
 
-if __name__ == "__main__":
-    loaded = load_modules()
-    print("Loaded Modules:", loaded)
-    app.run(host="0.0.0.0", port=8080)
+# Install a new module
+@app.route('/modules/install', methods=['POST'])
+def install_module():
+    module_name = request.json.get('module_name')
+    if not module_name:
+        return jsonify({"error": "Module name is required"}), 400
+    
+    modules_path = os.path.join(os.getcwd(), 'modules')
+    os.makedirs(modules_path, exist_ok=True)
+    module_path = os.path.join(modules_path, module_name)
+    
+    if os.path.exists(module_path):
+        return jsonify({"error": "Module already exists"}), 400
+    
+    os.makedirs(module_path)
+    return jsonify({"message": f"Module {module_name} installed successfully."})
+
+# System status
+@app.route('/status', methods=['GET'])
+def status():
+    return jsonify({
+        "server": "running",
+        "modules": os.listdir(os.path.join(os.getcwd(), 'modules')) if os.path.exists(os.path.join(os.getcwd(), 'modules')) else []
+    })
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080)

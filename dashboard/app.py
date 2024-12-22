@@ -13,6 +13,3 @@ def modules():
     modules_path = os.path.join(os.getcwd(), 'dashboard', 'modules')
     installed_modules = os.listdir(modules_path)
     return f"Installed Modules: {', '.join(installed_modules)}"
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
