@@ -25,9 +25,16 @@ def reload_modules():
     loaded = load_modules()
     return f"Modules reloaded: {loaded}"
 
-@app.route("/")
-def hello():
-    return "Main Application Running - Modules Loaded."
+
+@app.route('/')
+def home():
+    return "Welcome to the Automated Dashboard!"
+
+@app.route('/modules')
+def modules():
+    modules_path = os.path.join(os.getcwd(), 'dashboard', 'modules')
+    installed_modules = os.listdir(modules_path)
+    return f"Installed Modules: {', '.join(installed_modules)}"
 
 if __name__ == "__main__":
     loaded = load_modules()
