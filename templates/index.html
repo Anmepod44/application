@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f9; }
+        header { background: #4CAF50; color: white; padding: 1rem 2rem; text-align: center; }
+        main { padding: 2rem; }
+        section { margin-bottom: 1.5rem; }
+        .module-list { padding: 0; list-style: none; }
+        .module-list li { background: #fff; margin: 0.5rem 0; padding: 1rem; border: 1px solid #ddd; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Advanced Dashboard</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Welcome</h2>
+            <p>This is your advanced dashboard. Below are the installed modules.</p>
+        </section>
+        <section>
+            <h2>Installed Modules</h2>
+            <ul class="module-list" id="module-list"></ul>
+        </section>
+    </main>
+    <script>
+        fetch('/modules')
+        .then(response => response.json())
+        .then(data => {
+            const moduleList = document.getElementById('module-list');
+            data.installed_modules.forEach(module => {
+                const li = document.createElement('li');
+                li.textContent = module;
+                moduleList.appendChild(li);
+            });
+        });
+    </script>
+</body>
+</html>
